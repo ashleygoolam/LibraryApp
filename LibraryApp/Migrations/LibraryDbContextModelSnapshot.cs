@@ -22,7 +22,44 @@ namespace LibraryApp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("LibraryApp.Models.BookInformationEntity", b =>
+            modelBuilder.Entity("LibraryApp.Models.Author", b =>
+                {
+                    b.Property<int>("AuthorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuthorId"));
+
+                    b.Property<string>("Biography")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProfilePicture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AuthorId");
+
+                    b.ToTable("Author");
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.Author_Book", b =>
+                {
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AuthorId", "BookId");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("Author_Book");
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.Book", b =>
                 {
                     b.Property<int>("BookId")
                         .ValueGeneratedOnAdd()
@@ -30,20 +67,23 @@ namespace LibraryApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookId"));
 
-                    b.Property<string>("Author")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("CurrentAmount")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("DateCreated")
+                    b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Publisher")
+                    b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("PublisherId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -51,12 +91,97 @@ namespace LibraryApp.Migrations
                     b.Property<int>("TotalAmount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("bookCategory")
+                        .HasColumnType("int");
 
                     b.HasKey("BookId");
 
-                    b.ToTable("BookInformation");
+                    b.HasIndex("PublisherId");
+
+                    b.ToTable("Book");
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.BookInstance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("IsbnNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("bookStatus")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("BookInstance");
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.BookIssue", b =>
+                {
+                    b.Property<int>("IssueId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IssueId"));
+
+                    b.Property<int>("BookInstanceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BorrowersId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BorrowingLibrariansId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReturningLibrariansId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeBorrowed")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("TimeReturned")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("bookStatus")
+                        .HasColumnType("int");
+
+                    b.HasKey("IssueId");
+
+                    b.HasIndex("BookInstanceId")
+                        .IsUnique();
+
+                    b.ToTable("BookIssue");
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.Publisher", b =>
+                {
+                    b.Property<int>("PublisherId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PublisherId"));
+
+                    b.Property<string>("PublisherDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PublisherLogo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PublisherName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PublisherId");
+
+                    b.ToTable("Publisher");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -204,10 +329,12 @@ namespace LibraryApp.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -244,10 +371,12 @@ namespace LibraryApp.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -255,6 +384,58 @@ namespace LibraryApp.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.Author_Book", b =>
+                {
+                    b.HasOne("LibraryApp.Models.Author", "Author")
+                        .WithMany("Author_Book")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LibraryApp.Models.Book", "Book")
+                        .WithMany("Author_Book")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.Book", b =>
+                {
+                    b.HasOne("LibraryApp.Models.Publisher", "Publisher")
+                        .WithMany("Books")
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Publisher");
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.BookInstance", b =>
+                {
+                    b.HasOne("LibraryApp.Models.Book", "Book")
+                        .WithMany("BookInstance")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.BookIssue", b =>
+                {
+                    b.HasOne("LibraryApp.Models.BookInstance", "BookInstance")
+                        .WithOne("BookIssue")
+                        .HasForeignKey("LibraryApp.Models.BookIssue", "BookInstanceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BookInstance");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -306,6 +487,28 @@ namespace LibraryApp.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.Author", b =>
+                {
+                    b.Navigation("Author_Book");
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.Book", b =>
+                {
+                    b.Navigation("Author_Book");
+
+                    b.Navigation("BookInstance");
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.BookInstance", b =>
+                {
+                    b.Navigation("BookIssue");
+                });
+
+            modelBuilder.Entity("LibraryApp.Models.Publisher", b =>
+                {
+                    b.Navigation("Books");
                 });
 #pragma warning restore 612, 618
         }
