@@ -1,16 +1,22 @@
 using Microsoft.EntityFrameworkCore;
 using LibraryApp.Data;
 using Microsoft.AspNetCore.Identity;
+using LibraryApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
-
 var connectionString = builder.Configuration.GetConnectionString("LibraryConn") ?? throw new InvalidOperationException("connection string 'LibraryConn' was not found");
 builder.Services.AddDbContext<LibraryDbContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<LibraryDbContext>();
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<LibraryDbContext>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<LibraryDbContext>().AddDefaultUI().AddDefaultTokenProviders();
+
+//builder.Services.AddScoped<UserManager<ApplicationUser>>();
+//builder.Services.AddScoped<SignInManager<ApplicationUser>>();
+
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 

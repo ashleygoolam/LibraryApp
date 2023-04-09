@@ -6,7 +6,7 @@ namespace LibraryApp.Data
 {
     public class LibraryDbContext : IdentityDbContext<ApplicationUser>
     {
-        public LibraryDbContext(DbContextOptions options) : base(options)
+        public LibraryDbContext(DbContextOptions<LibraryDbContext> options) : base(options)
         {
         }
 
