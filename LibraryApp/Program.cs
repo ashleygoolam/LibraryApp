@@ -12,7 +12,7 @@ builder.Services.AddDbContext<LibraryDbContext>(options => options.UseSqlServer(
 //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<LibraryDbContext>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<LibraryDbContext>().AddDefaultUI().AddDefaultTokenProviders();
-
+//missing services that need to be added
 //builder.Services.AddScoped<UserManager<ApplicationUser>>();
 //builder.Services.AddScoped<SignInManager<ApplicationUser>>();
 
